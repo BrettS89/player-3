@@ -20,9 +20,13 @@ export class Router {
   }
 
   resolveEndpoint(method: string | undefined, url: string | undefined) {
+    if (method === 'OPTIONS') return
+
     if (!url) {
       throw new BadRequestError('Invalid path')
     }
+
+    console.log(method, url)
 
     if (!method || !methods.includes(method)) {
       throw new BadRequestError('Invalid method')
@@ -56,6 +60,9 @@ export class Router {
 
         const { status, data } = await endpoint.endpoint.handler(request, res)
 
+        res.setHeader('Access-Control-Allow-Origin', '*');
+        res.setHeader('Access-Control-Allow-Methods', 'OPTIONS, GET');
+        res.setHeader('Access-Control-Max-Age', 2592000); // 30 days
         res.writeHead(status, { 'Content-Type': 'application/json' })
         res.end(JSON.stringify(data))
 

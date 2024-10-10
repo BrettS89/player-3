@@ -1,6 +1,7 @@
 import fs from 'node:fs/promises'
 import { v4 as uuid } from 'uuid'
 import { Db, Table } from '../types'
+import { sortTracks } from '../../../utilities/misc'
 
 class JsonDbTable implements Table {
   name: string
@@ -31,7 +32,7 @@ class JsonDbTable implements Table {
     return obj[name]
   }
 
-  async getById(id: string) {
+  async getById<T>(id: string): Promise<T | null> {
     const documents = await this.getDataFromTable(this.name)
 
     const document = documents.find(d => d.id === id)
@@ -40,13 +41,13 @@ class JsonDbTable implements Table {
       return null
     }
 
-    return document
+    return document as T
   }
 
   async find() {
     const documents = await this.getDataFromTable(this.name)
 
-    return documents
+    return documents.sort(sortTracks)
   }
 
   async create(data: Record<string, any>) {
