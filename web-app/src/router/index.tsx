@@ -4,7 +4,7 @@ import { Library } from '../pages/library'
 
 export const Router = () => {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={process.env.REACT_APP_BASE_NAME}>
       <Routes>
         <Route path='/' element={<Library />} />
       </Routes>
